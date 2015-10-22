@@ -7,6 +7,9 @@ def github_url_from_remote(u):
     if u.startswith('https://'):
         return u
 
+    if 'github.com' not in u:
+        return None
+
     repo = u.split(':')[1]
     repo = repo[:-4]
 

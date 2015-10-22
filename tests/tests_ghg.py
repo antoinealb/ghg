@@ -33,6 +33,10 @@ nuft	git://github.com/nuft/master-firmware.git (push)
         result = ghg.github_url_from_remote_output(command_output)
         self.assertEqual(result, expected)
 
+    def test_origin_not_on_github(self):
+        url = 'git@gitlab.com:cvra/cvra.github.io.git'
+        self.assertIsNone(ghg.github_url_from_remote(url))
+
 
 @patch('platform.system')
 @patch('subprocess.call')
