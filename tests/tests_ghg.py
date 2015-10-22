@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, ANY
 
-import github_go as ghg
+import ghg.ghg as ghg
 
 
 class GithubUrlFromRemote(TestCase):
