@@ -18,3 +18,9 @@ ghg
 # You can also open a page from any directory
 ghg antoinealb/ghg
 ```
+
+## Installing
+
+```bash
+python3 setup.py install
+```
