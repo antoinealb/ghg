@@ -1,17 +1,30 @@
 import platform
 import subprocess
 import argparse
+import re
 
 
 def github_url_from_remote(u):
     if u.startswith('https://'):
         return u
 
-    if 'github.com' not in u:
-        return None
+    elif u.startswith('git://'):
+        repo_regexp = '^git://github.com/(.*).git$'
+        match = re.search(repo_regexp, u)
 
-    repo = u.split(':')[1]
-    repo = repo[:-4]
+        if not match:
+            return None
+
+        repo = match.group(1)
+
+    else: # ssh remote
+        repo_regexp = '^git@github.com:(.*).git$'
+        match = re.search(repo_regexp, u)
+
+        if not match:
+            return None
+
+        repo = match.group(1)
 
     return 'https://github.com/{}'.format(repo)
 

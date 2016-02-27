@@ -10,10 +10,17 @@ class GithubUrlFromRemote(TestCase):
         result = ghg.github_url_from_remote(url)
         self.assertEqual(result, url)
 
-    def test_git_remote(self):
+    def test_ssh_remote(self):
         url = 'git@github.com:cvra/cvra.github.io.git'
         expected = 'https://github.com/cvra/cvra.github.io'
 
+        result = ghg.github_url_from_remote(url)
+
+        self.assertEqual(result, expected)
+
+    def test_git_remote(self):
+        url = "git://github.com/cvra/motor-control-firmware.git"
+        expected = 'https://github.com/cvra/motor-control-firmware'
         result = ghg.github_url_from_remote(url)
 
         self.assertEqual(result, expected)
