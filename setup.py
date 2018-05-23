@@ -6,4 +6,4 @@ setup(
       author = 'antoinealb',
       url = 'http://github.com/antoinealb/ghg',
       py_modules = ['ghg.ghg'],
-      scripts = ['bin/ghg'])
+      scripts = ['bin/ghg', 'bin/github-get-stars'])

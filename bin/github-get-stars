@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""
+Fetches all stars from a user and drop them to a file.
+"""
+
+import argparse
+import getpass
+import re
+import requests
+import json
+import logging
+from urllib.request import urlopen
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action='store_const',
+        default=logging.WARNING,
+        const=logging.INFO,
+        help="Verbosity level to use.")
+    parser.add_argument("username")
+
+    return parser.parse_args()
+
+
+def get_stars(username, password):
+    url = "https://api.github.com/users/{user}/starred".format(user=username)
+
+    page_re = re.compile('<([^>]*)>; rel="next"')
+
+    results = []
+
+    while True:
+        logging.info("Opening %s", url)
+        answer = requests.get(url, auth=('antoinealb', password))
+
+        answer.raise_for_status()
+
+        results += json.loads(answer.text)
+
+        match = page_re.search(answer.headers['link'])
+
+        if not match:
+            logging.info("Could not find a next page, aborting")
+            break
+
+        url, = match.groups(1)
+
+    return results
+
+
+def get_password(username):
+    p = 'Github password for {}: '.format(username)
+    return getpass.getpass(prompt=p)
+
+
+def main():
+    args = parse_args()
+    logging.basicConfig(level=args.verbose)
+
+    password = get_password(args.username)
+    stars = get_stars(args.username, password)
+
+    logging.info("Got stars: %s", json.dumps(stars, indent=2, sort_keys=True))
+
+    url_len = max(len(s['html_url']) for s in stars)
+    url_len = min(url_len, 60)
+
+    def pad(s, l):
+        return s + " " * (l - len(s))
+
+    for s in stars:
+        description = s['description'] or ""
+        url = s['html_url']
+        line = "{} {}".format(pad(url, url_len), description)
+        print(line)
+
+
+if __name__ == '__main__':
+    main()
